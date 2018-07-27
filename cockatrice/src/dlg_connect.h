@@ -73,6 +73,7 @@ private:
     QPushButton *btnConnect, *btnForgotPassword, *btnRefreshServers;
     QMap<QString, std::pair<QString, UserConnection_Information>> savedHostList;
     HandlePublicServers *hps;
-    const QString placeHolderText = tr("Downloading...");
+    const QString placeHolderTextDownloading = tr("Downloading...");
+    const QString placeHolderTextChoose = tr("Choose your server");
 };
 #endif

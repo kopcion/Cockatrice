@@ -20,6 +20,7 @@ DlgConnect::DlgConnect(QWidget *parent) : QDialog(parent)
 {
     previousHostButton = new QRadioButton(tr("Known Hosts"), this);
     previousHosts = new QComboBox(this);
+    previousHosts->addItem(placeHolderTextChoose);
     previousHosts->installEventFilter(new DeleteHighlightedItemWhenShiftDelPressedEventFilter);
 
     hps = new HandlePublicServers(this);
@@ -182,7 +183,7 @@ void DlgConnect::downloadThePublicServers()
 {
     btnRefreshServers->setDisabled(true);
     previousHosts->clear();
-    previousHosts->addItem(placeHolderText);
+    previousHosts->addItem(placeHolderTextDownloading);
     hps->downloadPublicServers();
 }
 
@@ -238,7 +239,7 @@ void DlgConnect::previousHostSelected(bool state)
 
 void DlgConnect::updateDisplayInfo(const QString &saveName)
 {
-    if (saveEdit == nullptr || saveName == placeHolderText) {
+    if (saveEdit == nullptr || saveName == placeHolderTextDownloading || saveName == placeHolderTextChoose) {
         return;
     }
 
