@@ -209,7 +209,7 @@ void DlgConnect::rebuildComboBoxList(int failure)
 
     int i = 0;
     previousHosts->addItem(placeHolderTextChoose);
-    i++
+    i++;
     for (auto pair : savedHostList) {
         auto tmp = pair.second;
         QString saveName = tmp.getSaveName();
