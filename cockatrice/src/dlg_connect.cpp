@@ -211,8 +211,8 @@ void DlgConnect::rebuildComboBoxList(int failure)
     for (auto pair : savedHostList) {
         auto tmp = pair.second;
         QString saveName = tmp.getSaveName();
+        previousHosts->addItem(placeHolderTextChoose);
         if (saveName.size()) {
-            previousHosts->addItem(placeHolderTextChoose);
             previousHosts->addItem(saveName);
 
             if (settingsCache->servers().getPrevioushostName() == saveName) {
