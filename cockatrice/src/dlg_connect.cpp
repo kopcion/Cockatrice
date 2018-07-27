@@ -208,10 +208,10 @@ void DlgConnect::rebuildComboBoxList(int failure)
     savedHostList = uci.getServerInfo();
 
     int i = 0;
+    previousHosts->addItem(placeHolderTextChoose);
     for (auto pair : savedHostList) {
         auto tmp = pair.second;
         QString saveName = tmp.getSaveName();
-        previousHosts->addItem(placeHolderTextChoose);
         if (saveName.size()) {
             previousHosts->addItem(saveName);
 
