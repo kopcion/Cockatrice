@@ -20,7 +20,6 @@ DlgConnect::DlgConnect(QWidget *parent) : QDialog(parent)
 {
     previousHostButton = new QRadioButton(tr("Known Hosts"), this);
     previousHosts = new QComboBox(this);
-    previousHosts->addItem(placeHolderTextChoose);
     previousHosts->installEventFilter(new DeleteHighlightedItemWhenShiftDelPressedEventFilter);
 
     hps = new HandlePublicServers(this);
@@ -213,6 +212,7 @@ void DlgConnect::rebuildComboBoxList(int failure)
         auto tmp = pair.second;
         QString saveName = tmp.getSaveName();
         if (saveName.size()) {
+            previousHosts->addItem(placeHolderTextChoose);
             previousHosts->addItem(saveName);
 
             if (settingsCache->servers().getPrevioushostName() == saveName) {
