@@ -13,6 +13,7 @@
 #include <QMessageBox>
 #include <algorithm>
 #include <utility>
+#include <iostream>
 
 const char *CardDatabase::TOKENS_SETNAME = "TK";
 
@@ -686,6 +687,10 @@ const QString CardInfo::getLoyalty() const
 }
 const QString CardInfo::getMainCardType() const
 {
+    if(getProperty(Mtg::MainCardType).toStdString() == ""){
+//        QString cardType = getProperty(Mtg::CardType);
+    }
+    std::cout<<"MainCardType: "<<getProperty(Mtg::MainCardType).toStdString()<<std::endl;
     return getProperty(Mtg::MainCardType);
 }
 const QString CardInfo::getManaCost() const

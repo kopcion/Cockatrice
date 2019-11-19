@@ -12,6 +12,7 @@
 #include <QTextDocument>
 #include <QTextStream>
 #include <QTextTable>
+#include <crypt.h>
 
 DeckListModel::DeckListModel(QObject *parent)
     : QAbstractItemModel(parent), lastKnownColumn(1), lastKnownOrder(Qt::AscendingOrder)
@@ -330,7 +331,13 @@ QModelIndex DeckListModel::addCard(const QString &cardName, const QString &zoneN
 
     InnerDecklistNode *zoneNode = createNodeIfNeeded(zoneName, root);
 
-    QString cardType = info->getMainCardType();
+    QString cardType = "";
+    if(!info->getIsToken() and info->getMainCardType() == "") {
+        cardType = info->getMainCardType();
+    } else {
+        cardType = info->getCardType();
+    }
+
     InnerDecklistNode *cardTypeNode = createNodeIfNeeded(cardType, zoneNode);
 
     QModelIndex parentIndex = nodeToIndex(cardTypeNode);
