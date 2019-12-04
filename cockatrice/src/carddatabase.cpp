@@ -540,6 +540,7 @@ LoadStatus CardDatabase::loadCardDatabases()
     }
 
     reloadDatabaseMutex->unlock();
+    getAllMainCardTypes();
     return loadStatus;
 }
 
@@ -567,14 +568,36 @@ void CardDatabase::refreshCachedReverseRelatedCards()
     }
 }
 
+#include <set>
+
 QStringList CardDatabase::getAllMainCardTypes() const
 {
-    QSet<QString> types;
+    QSet<QString> names;
+//    QSet<QString> types;
+    std::set<std::string> typesAndNames;
+    std::set<std::string> types;
     QHashIterator<QString, CardInfoPtr> cardIterator(cards);
     while (cardIterator.hasNext()) {
-        types.insert(cardIterator.next().value()->getMainCardType());
+        if(cardIterator.peekNext().value()->getIsToken())
+        {
+            typesAndNames.insert((cardIterator.peekNext().value()->getCardType() + " : " + cardIterator.peekNext().value()->getName()).toStdString());
+            std::string str = cardIterator.peekNext().value()->getCardType().toStdString();
+            if(str.find("—") != std::string::npos)str.erase(str.find("—"), str.length() - str.find("—"));
+            if(str.find("Token") != std::string::npos) str.erase(str.find("Token"), 6);
+            while(str[str.length()-1] == ' ') str.erase(str.length()-1, 1);
+            types.insert(str);
+        }
+        cardIterator.next();
     }
-    return types.toList();
+
+    qDebug() << "XD";
+    for(auto x : types){
+        qDebug() << x.c_str();
+    }
+    qDebug() << types.size();
+
+//    return types.toList();
+    return names.toList();
 }
 
 void CardDatabase::checkUnknownSets()
@@ -704,4 +727,22 @@ const QString CardInfo::getPowTough() const
 void CardInfo::setPowTough(const QString &value)
 {
     setProperty(Mtg::PowTough, value);
+}
+
+QString CardInfo::getCardNodeName() const {
+    QString cardType = "";
+    if(!getIsToken() and getMainCardType() == "") {
+        cardType = getMainCardType();
+    } else {
+        cardType = getCardType();
+    }
+
+    if(getIsToken()){
+        std::string str = cardType.toStdString();
+        if(str.find("—") != std::string::npos) str.erase(str.find("—"), str.length() - str.find("—"));
+        if(str.find("Token") != std::string::npos) str.erase(str.find("Token"), 6);
+        while(str[str.length()-1] == ' ') str.erase(str.length()-1, 1);
+        cardType = QString::fromStdString(str);
+    }
+
 }

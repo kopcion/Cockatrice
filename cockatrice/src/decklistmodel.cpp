@@ -338,6 +338,14 @@ QModelIndex DeckListModel::addCard(const QString &cardName, const QString &zoneN
         cardType = info->getCardType();
     }
 
+    if(info->getIsToken()){
+        std::string str = cardType.toStdString();
+        if(str.find("—") != std::string::npos) str.erase(str.find("—"), str.length() - str.find("—"));
+        if(str.find("Token") != std::string::npos) str.erase(str.find("Token"), 6);
+        while(str[str.length()-1] == ' ') str.erase(str.length()-1, 1);
+        cardType = QString::fromStdString(str);
+    }
+
     InnerDecklistNode *cardTypeNode = createNodeIfNeeded(cardType, zoneNode);
 
     QModelIndex parentIndex = nodeToIndex(cardTypeNode);
