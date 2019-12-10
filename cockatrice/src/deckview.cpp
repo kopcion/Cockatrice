@@ -137,12 +137,21 @@ void DeckView::mouseDoubleClickEvent(QMouseEvent *event)
             m.set_card_name(c->getName().toStdString());
             m.set_start_zone(zone->getName().toStdString());
 
-            if (zone->getName() == DECK_ZONE_MAIN)
+            if (zone->getName() == DECK_ZONE_MAIN){
                 m.set_target_zone(DECK_ZONE_SIDE);
-            else if (zone->getName() == DECK_ZONE_SIDE)
+            } else if (zone->getName() == DECK_ZONE_SIDE) {
+                if(c->getInfo()->getIsToken()){
+                    m.set_target_zone(DECK_ZONE_TOKENS);
+                } else {
+//                    m.set_target_zone(DECK_ZONE_MAIN);
+                    m.set_target_zone(DECK_ZONE_TOKENS);
+                }
+            } else if (zone->getName() == DECK_ZONE_TOKENS) {
                 m.set_target_zone(DECK_ZONE_MAIN);
-            else // Trying to move from another zone
+            } else // Trying to move from another zone
+            {
                 m.set_target_zone(zone->getName().toStdString());
+            }
 
             result.append(m);
         }
