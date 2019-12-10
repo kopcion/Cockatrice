@@ -704,14 +704,16 @@ void CardInfo::setPowTough(const QString &value)
 }
 
 QString CardInfo::getCardNodeName() const {
-    if(!isToken and getProperty(Mtg::MainCardType) == "") return getProperty(Mtg::MainCardType);
+    if(!isToken and getProperty(Mtg::MainCardType) != "") return getProperty(Mtg::MainCardType);
 
     QString cardNodeName = getProperty(Mtg::CardType);
 
     if(isToken){
         std::string tmpStr = cardNodeName.toStdString();
+        if(tmpStr.find("Creature") != std::string::npos) return QString("Creature");
         if(tmpStr.find("—") != std::string::npos) tmpStr.erase(tmpStr.find("—"), tmpStr.length() - tmpStr.find("—"));
         if(tmpStr.find("Token ") != std::string::npos) tmpStr.erase(tmpStr.find("Token "), 6);
+        if(tmpStr.find("Legendary ") != std::string::npos) tmpStr.erase(tmpStr.find("Legendary "), strlen("Legendary "));
         while(tmpStr[tmpStr.length()-1] == ' ') tmpStr.erase(tmpStr.length()-1, 1);
         cardNodeName = QString::fromStdString(tmpStr);
     }
