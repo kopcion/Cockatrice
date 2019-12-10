@@ -331,6 +331,7 @@ public:
     const QString getPowTough() const;
     void setPowTough(const QString &value);
 
+    QString getCardNodeName() const;
     // methods using per-set properties
     QString getCustomPicURL(const QString &set) const
     {

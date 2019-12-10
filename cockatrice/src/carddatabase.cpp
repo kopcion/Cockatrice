@@ -568,36 +568,14 @@ void CardDatabase::refreshCachedReverseRelatedCards()
     }
 }
 
-#include <set>
-
 QStringList CardDatabase::getAllMainCardTypes() const
 {
-    QSet<QString> names;
-//    QSet<QString> types;
-    std::set<std::string> typesAndNames;
-    std::set<std::string> types;
+    QSet<QString> types;
     QHashIterator<QString, CardInfoPtr> cardIterator(cards);
     while (cardIterator.hasNext()) {
-        if(cardIterator.peekNext().value()->getIsToken())
-        {
-            typesAndNames.insert((cardIterator.peekNext().value()->getCardType() + " : " + cardIterator.peekNext().value()->getName()).toStdString());
-            std::string str = cardIterator.peekNext().value()->getCardType().toStdString();
-            if(str.find("—") != std::string::npos)str.erase(str.find("—"), str.length() - str.find("—"));
-            if(str.find("Token") != std::string::npos) str.erase(str.find("Token"), 6);
-            while(str[str.length()-1] == ' ') str.erase(str.length()-1, 1);
-            types.insert(str);
-        }
-        cardIterator.next();
+        types.insert(cardIterator.next().value()->getMainCardType());
     }
-
-    qDebug() << "XD";
-    for(auto x : types){
-        qDebug() << x.c_str();
-    }
-    qDebug() << types.size();
-
-//    return types.toList();
-    return names.toList();
+    return types.toList();
 }
 
 void CardDatabase::checkUnknownSets()
@@ -710,10 +688,6 @@ const QString CardInfo::getLoyalty() const
 }
 const QString CardInfo::getMainCardType() const
 {
-    if(getProperty(Mtg::MainCardType).toStdString() == ""){
-//        QString cardType = getProperty(Mtg::CardType);
-    }
-    std::cout<<"MainCardType: "<<getProperty(Mtg::MainCardType).toStdString()<<std::endl;
     return getProperty(Mtg::MainCardType);
 }
 const QString CardInfo::getManaCost() const
@@ -730,19 +704,17 @@ void CardInfo::setPowTough(const QString &value)
 }
 
 QString CardInfo::getCardNodeName() const {
-    QString cardType = "";
-    if(!getIsToken() and getMainCardType() == "") {
-        cardType = getMainCardType();
-    } else {
-        cardType = getCardType();
+    if(!isToken and getProperty(Mtg::MainCardType) == "") return getProperty(Mtg::MainCardType);
+
+    QString cardNodeName = getProperty(Mtg::CardType);
+
+    if(isToken){
+        std::string tmpStr = cardNodeName.toStdString();
+        if(tmpStr.find("—") != std::string::npos) tmpStr.erase(tmpStr.find("—"), tmpStr.length() - tmpStr.find("—"));
+        if(tmpStr.find("Token ") != std::string::npos) tmpStr.erase(tmpStr.find("Token "), 6);
+        while(tmpStr[tmpStr.length()-1] == ' ') tmpStr.erase(tmpStr.length()-1, 1);
+        cardNodeName = QString::fromStdString(tmpStr);
     }
 
-    if(getIsToken()){
-        std::string str = cardType.toStdString();
-        if(str.find("—") != std::string::npos) str.erase(str.find("—"), str.length() - str.find("—"));
-        if(str.find("Token") != std::string::npos) str.erase(str.find("Token"), 6);
-        while(str[str.length()-1] == ' ') str.erase(str.length()-1, 1);
-        cardType = QString::fromStdString(str);
-    }
-
+    return cardNodeName;
 }
